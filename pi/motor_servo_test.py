@@ -12,7 +12,7 @@ pca = PCA9685(i2c)
 pca.frequency = FREQ
 
 # Use CH1 for throttle (ESC)
-channel = 1
+channel = 8
 
 # Convert microseconds to 16-bit duty cycle
 def pulse_us_to_duty(pulse_us):
