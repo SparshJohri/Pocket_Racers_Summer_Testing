@@ -1,11 +1,21 @@
+import argparse
 import time
 import busio
 from board import SCL, SDA
 from adafruit_pca9685 import PCA9685
 
+
+
+parser = argparse.ArgumentParser(description="Test ESC and Servo via PCA9685")
+parser.add_argument('-e', '--esc', type=int, default=1, help='ESC channel (default: 1)')
+parser.add_argument('-s', '--servo', type=int, default=0, help='Servo channel (default: 0)')
+args = parser.parse_args()
+
+ESC_CHANNEL = args.esc
+SERVO_CHANNEL = args.servo
+
+
 # === Constants ===
-ESC_CHANNEL = 3
-SERVO_CHANNEL = 8
 FREQ = 60  # Standard ESC expects 50–60Hz
 NEUTRAL_US = 1000  # ESC arming pulse (1.5 ms)
 FORWARD_US = 2000  # Full throttle (2.0 ms)
