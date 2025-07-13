@@ -3,6 +3,12 @@ import busio
 from board import SCL, SDA
 from adafruit_pca9685 import PCA9685
 
+
+parser = argparse.ArgumentParser(description="Test Servo via PCA9685")
+parser.add_argument('-s', '--servo', type=int, default=0, help='Servo channel (default: 0)')
+args = parser.parse_args()
+channel = args.servo
+
 # PWM frequency for ESC
 FREQ = 60
 
@@ -10,9 +16,6 @@ FREQ = 60
 i2c = busio.I2C(SCL, SDA)
 pca = PCA9685(i2c)
 pca.frequency = FREQ
-
-# Use CH1 for throttle (ESC)
-channel = 8
 
 # Convert microseconds to 16-bit duty cycle
 def pulse_us_to_duty(pulse_us):

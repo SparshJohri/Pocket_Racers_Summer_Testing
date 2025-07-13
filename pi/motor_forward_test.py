@@ -3,8 +3,13 @@ import board
 import busio
 from adafruit_pca9685 import PCA9685
 
+
+parser = argparse.ArgumentParser(description="Test ESC via PCA9685")
+parser.add_argument('-e', '--esc', type=int, default=1, help='ESC channel (default: 1)')
+args = parser.parse_args()
+ESC_CHANNEL = args.esc
+
 # === Constants ===
-ESC_CHANNEL = 3
 PWM_FREQ_HZ = 60  # Standard ESC expects 50–60Hz
 NEUTRAL_US = 1000  # ESC arming pulse (1.5 ms)
 FORWARD_US = 2000  # Full throttle (2.0 ms)
