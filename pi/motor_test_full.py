@@ -35,27 +35,27 @@ def pulse_to_duty(pulse_us):
 
 try:
     if (arm_ESC == 1):
-    	print("Arming the ESC...")
-    	pca.channels[ESC_CHANNEL].duty_cycle = pulse_to_duty(STOP_US)
-    	time.sleep(2)
-    	print("ESC armed. Initiating test...")
-    	time.sleep(0.5)
+        print("Arming the ESC...")
+        pca.channels[ESC_CHANNEL].duty_cycle = pulse_to_duty(STOP_US)
+        time.sleep(2)
+        print("ESC armed. Initiating test...")
+        time.sleep(0.5)
     for angle_pulse in range(1500, 900, -50):
         '''
-	for throttle_pulse in range(1000, 2100, 125):
-            print(f"Setting servo to {angle_pulse} µs and ESC to {throttle_pulse} µs...")
-            pca.channels[SERVO_CHANNEL].duty_cycle = pulse_to_duty(angle_pulse)
-            pca.channels[ESC_CHANNEL].duty_cycle = pulse_to_duty(throttle_pulse)
-            time.sleep(0.5)
+        for throttle_pulse in range(1000, 2100, 125):
+                print(f"Setting servo to {angle_pulse} µs and ESC to {throttle_pulse} µs...")
+                pca.channels[SERVO_CHANNEL].duty_cycle = pulse_to_duty(angle_pulse)
+                pca.channels[ESC_CHANNEL].duty_cycle = pulse_to_duty(throttle_pulse)
+                time.sleep(0.5)
 
-        for throttle_pulse in range(2000, 1600, 100):
-            print(f"Setting servo to {angle_pulse} µs and ESC to {throttle_pulse} µs...")
-            pca.channels[SERVO_CHANNEL].duty_cycle = pulse_to_duty(angle_pulse)
-            pca.channels[ESC_CHANNEL].duty_cycle = pulse_to_duty(throttle_pulse)
-            time.sleep(0.5)
-	'''
-    	pca_channels[SERVO_CHANNEL].duty_cycle = pulse_to_duty(angle_pulse)
-    	print('PWM Pulse: {}'.format(angle_pulse))
+            for throttle_pulse in range(2000, 1600, 100):
+                print(f"Setting servo to {angle_pulse} µs and ESC to {throttle_pulse} µs...")
+                pca.channels[SERVO_CHANNEL].duty_cycle = pulse_to_duty(angle_pulse)
+                pca.channels[ESC_CHANNEL].duty_cycle = pulse_to_duty(throttle_pulse)
+                time.sleep(0.5)
+        '''
+        pca.channels[SERVO_CHANNEL].duty_cycle = pulse_to_duty(angle_pulse)
+        print('PWM Pulse: {}'.format(angle_pulse))
 
     print("All tests done. Going back to neutral...")
     pca.channels[ESC_CHANNEL].duty_cycle = pulse_to_duty(STOP_US)
