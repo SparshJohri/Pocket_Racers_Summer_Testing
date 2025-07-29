@@ -3,7 +3,7 @@ import time
 import busio
 from board import SCL, SDA
 from adafruit_pca9685 import PCA9685
-
+import numpy as np
 
 
 parser = argparse.ArgumentParser(description="Test ESC and Servo via PCA9685")
@@ -19,9 +19,9 @@ arm_ESC = args.initialize
 
 # === Constants ===
 FREQ = 60  # Standard ESC expects 50–60Hz
-NEUTRAL_US = 1000  # ESC arming pulse (1.5 ms)
-FORWARD_US = 2000  # Full throttle (2.0 ms)
-STOP_US = 1500     # Back to neutral
+NEUTRAL = 1500
+MAX = 1900
+MIN = 1200
 
 # Setup I2C bus and PCA9685
 i2c = busio.I2C(SCL, SDA)
@@ -40,27 +40,40 @@ try:
         time.sleep(2)
         print("ESC armed. Initiating test...")
         time.sleep(0.5)
-    for angle_pulse in range(1500, 900, -50):
-        '''
-        for throttle_pulse in range(1000, 2100, 125):
-                print(f"Setting servo to {angle_pulse} µs and ESC to {throttle_pulse} µs...")
-                pca.channels[SERVO_CHANNEL].duty_cycle = pulse_to_duty(angle_pulse)
-                pca.channels[ESC_CHANNEL].duty_cycle = pulse_to_duty(throttle_pulse)
-                time.sleep(0.5)
 
-            for throttle_pulse in range(2000, 1600, 100):
-                print(f"Setting servo to {angle_pulse} µs and ESC to {throttle_pulse} µs...")
-                pca.channels[SERVO_CHANNEL].duty_cycle = pulse_to_duty(angle_pulse)
-                pca.channels[ESC_CHANNEL].duty_cycle = pulse_to_duty(throttle_pulse)
-                time.sleep(0.5)
-        '''
-        pca.channels[SERVO_CHANNEL].duty_cycle = pulse_to_duty(angle_pulse)
-        print('PWM Pulse: {}'.format(angle_pulse))
+    angle_range = [i for i in np.linspace(NEUTRAL, MAX, 3, endpoint = False, dtype = int)] + [i for i in np.linspace(MAX, MIN, 4, endpoint = False, dtype = int)] + [i for i in np.linspace(MIN, NEUTRAL, 4, dtype = int)]
+    throttle_range = [i for i in np.linspace(NEUTRAL, MAX, 3, endpoint = False, dtype = int)] + [i for i in np.linspace(MAX, NEUTRAL, 3, dtype = int)] 
 
-    print("All tests done. Going back to neutral...")
-    pca.channels[ESC_CHANNEL].duty_cycle = pulse_to_duty(STOP_US)
-    pca.channels[SERVO_CHANNEL].duty_cycle = pulse_to_duty(STOP_US)
+    print("      ", end = "", flush = True)
+    for i in throttle_range:
+        print(" ", i, end="", flush = True)
+    print()
+    for angle_pulse in angle_range:
+        print(angle_pulse, end = "")
+        for throttle_pulse in throttle_range:
+            print("     X", end = "", flush = True)
+            pca.channels[ESC_CHANNEL].duty_cycle = pulse_to_duty(throttle_pulse)
+            pca.channels[SERVO_CHANNEL].duty_cycle = pulse_to_duty(angle_pulse)
+            time.sleep(0.25)
+        print()
+    print("\n\n\n")
 
+
+    print("      ", end = "", flush = True)
+    for i in angle_range:
+        print("", i, end="", flush = True)
+    print()
+    for throttle_pulse in throttle_range:
+        print(throttle_pulse, end = "", flush = True)
+        for angle_pulse in angle_range:
+            print("    X", end = "", flush = True)
+            pca.channels[ESC_CHANNEL].duty_cycle = pulse_to_duty(throttle_pulse)
+            pca.channels[SERVO_CHANNEL].duty_cycle = pulse_to_duty(angle_pulse)
+            time.sleep(0.25)
+        print()
+    
+    pca.channels[ESC_CHANNEL].duty_cycle = pulse_to_duty(1500)
+    pca.channels[SERVO_CHANNEL].duty_cycle = pulse_to_duty(1500)
 
 finally:
     pca.deinit()
